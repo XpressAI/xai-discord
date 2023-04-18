@@ -1,4 +1,4 @@
-from xai_components.base import InArg, OutArg, InCompArg, Component, xai_component
+from xai_components.base import InArg, OutArg, InCompArg, BaseComponent, Component, xai_component
 import discord
 
 import asyncio
@@ -58,11 +58,13 @@ class DiscordMessageResponder(Component):
             async def message_responder(message):
                 for trigger, response in ctx['message_responders']:
                     if message.content.startswith(trigger):
-                        await message.channel.send(response)
+                        await message.channel.send(response, reference=message)
                         break
 
             ctx['message_responder'] = message_responder
-            ctx['on_message_handlers'].append(message_responder)
+
+            if message_responder not in ctx['on_message_handlers']:
+                ctx['on_message_handlers'].append(message_responder)
 
 
 
@@ -84,7 +86,8 @@ class DiscordShutdownBot(Component):
 
         async def shutdown_bot(message):
             if message.content.startswith(self.shutdown_cmd.value) and message.author.guild_permissions.administrator:
-                await message.channel.send("Shutting down...")
+                await message.channel.send("Shutting down...", reference=message)
+
                 await client.close()
 
         if 'on_message_handlers' not in ctx:
