@@ -130,3 +130,78 @@ class DiscordDeployBot(Component):
         else:
             # If running as a standalone script, use client.run()
             client.run(token)
+
+@xai_component
+class DiscordTriggerBranch(Component):
+    """
+    This component listens for a specified message trigger and, when detected, 
+    executes the provided on_message component, passing the received message as input.
+
+    ##### inPorts:
+    - on_message: A BaseComponent to be executed when the message trigger is detected.
+    - msg_trigger (str): The message trigger that the bot listens for.
+
+    ##### outPorts:
+    - discord_msg: The received message that triggered the on_message component.
+
+    ##### ctx:
+    - on_message_handlers: A list of message handling functions that are called when a message is received.
+    """
+    on_message: BaseComponent
+    msg_trigger: InCompArg[str]
+    discord_msg: OutArg[discord.message.Message]
+
+    def execute(self, ctx) -> None:
+
+        if 'on_message_handlers' not in ctx:
+            ctx['on_message_handlers'] = []
+
+        async def trigger_branch_handler(message):
+            if message.content.startswith(self.msg_trigger.value):
+                
+                self.discord_msg.value = message
+                await self.on_message.do(ctx)
+
+        ctx['on_message_handlers'].append(trigger_branch_handler)
+
+
+@xai_component
+class DiscordEchoMessage(Component):
+    """
+    This component takes a Discord message as input and creates an echo response by 
+    concatenating "You said: " with the message content.
+
+    ##### inPorts:
+    - discord_msg: The received Discord message.
+
+    ##### outPorts:
+    - msg (str): The constructed echo response.
+    """
+    discord_msg: InCompArg[discord.message.Message]
+    msg: OutArg[str]
+
+    def execute(self, ctx) -> None:
+
+        message = self.discord_msg.value
+        self.msg.value = "You said: " + str(message.content)
+
+
+@xai_component
+class DiscordPostMessage(Component):
+    """
+    Sends a message to the same channel as the received Discord message.
+    It uses the provided message as the response and references the original message in the reply.
+
+    ##### inPorts:
+    - msg_response: The response message to be sent.
+    - discord_msg (str): The original Discord message that the bot is replying to.
+    """
+
+    msg_response: InCompArg[str]
+    discord_msg: InCompArg[discord.message.Message]
+
+    def execute(self, ctx) -> None:
+
+        message = self.discord_msg.value
+        response = self.msg_response.value
+        asyncio.ensure_future(message.channel.send(response, reference=message))
