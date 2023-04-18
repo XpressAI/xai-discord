@@ -5,6 +5,9 @@ Xircuits component library to interface with Discord! Uses [discord.py](https://
 
 ![helloXircuitsDiscord](https://user-images.githubusercontent.com/68586800/232559150-593258f0-dfd7-43d5-9afa-069210bd6787.gif)
 
+### Computer Vision Example
+![DiscordCVBot](https://user-images.githubusercontent.com/68586800/232880388-0a999fa2-f9cf-40df-be51-73601afc8963.gif)
+
 
 ## Installation
 

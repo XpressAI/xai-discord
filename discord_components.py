@@ -187,6 +187,25 @@ class DiscordEchoMessage(Component):
 
 
 @xai_component
+class DiscordMessage2Str(Component):
+    """Removes the leading trigger string from a Discord message.
+
+    ##### inPorts:
+    - discord_msg: Input Discord message.
+    - msg_trigger(str): Trigger string to remove.
+
+    ##### outPorts:
+    - msg(str): Modified message.
+    """
+    discord_msg: InCompArg[discord.message.Message]
+    msg_trigger: InCompArg[str]
+    msg: OutArg[str]
+
+    def execute(self, ctx) -> None:
+        discord_msg = str(self.discord_msg.value.content)
+        self.msg.value  = discord_msg.replace(self.msg_trigger.value, "", 1).strip()
+
+@xai_component
 class DiscordPostMessage(Component):
     """
     Sends a message to the same channel as the received Discord message.
@@ -205,3 +224,43 @@ class DiscordPostMessage(Component):
         message = self.discord_msg.value
         response = self.msg_response.value
         asyncio.ensure_future(message.channel.send(response, reference=message))
+
+
+@xai_component
+class DiscordProcessImage(Component):
+    """Processes an image attachment from a Discord message and triggers the 'on_message' component.
+
+    ##### inPorts:
+    - msg_trigger: String representing the message trigger.
+
+    ##### outPorts:
+    - discord_msg: The processed Discord message.
+    - image_data: Image data in bytes.
+
+    """
+
+    on_message: BaseComponent
+    msg_trigger: InCompArg[str]
+    discord_msg: OutArg[discord.message.Message]
+    image_data: OutArg[bytes]
+
+    def execute(self, ctx) -> None:
+
+        import aiohttp
+
+        if 'on_message_handlers' not in ctx:
+            ctx['on_message_handlers'] = []
+
+        async def process_image_handler(message):
+            if message.content.startswith(self.msg_trigger.value):
+                if message.attachments:
+                    attachment = message.attachments[0]
+                    if attachment.content_type.startswith("image/"):
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(attachment.url) as resp:
+                                self.image_data.value = await resp.read()
+
+                self.discord_msg.value = message
+                await self.on_message.do(ctx)
+
+        ctx['on_message_handlers'].append(process_image_handler)
