@@ -1,4 +1,5 @@
 from xai_components.base import InArg, OutArg, InCompArg, BaseComponent, Component, xai_component
+from discord import File
 import discord
 
 import asyncio
@@ -214,23 +215,29 @@ class DiscordMessage2Str(Component):
 @xai_component
 class DiscordPostMessage(Component):
     """
-    Sends a message to the same channel as the received Discord message.
+    Sends a message with an optional attachment to the same channel as the received Discord message.
     It uses the provided message as the response and references the original message in the reply.
 
     ##### inPorts:
     - msg_response: The response message to be sent.
     - discord_msg (str): The original Discord message that the bot is replying to.
+    - attachment_path (str): The local path to the file to be sent as an attachment. Defaults to None.
     """
 
     msg_response: InCompArg[str]
     discord_msg: InCompArg[discord.message.Message]
+    attachment_path: InArg[str]
 
     def execute(self, ctx) -> None:
 
         message = self.discord_msg.value
         response = self.msg_response.value
-        asyncio.ensure_future(message.channel.send(response, reference=message))
 
+        if self.attachment_path.value:
+            file = File(self.attachment_path.value)
+            asyncio.ensure_future(message.channel.send(response, reference=message, files=[file]))
+        else:
+            asyncio.ensure_future(message.channel.send(response, reference=message))
 
 @xai_component
 class DiscordProcessImage(Component):
