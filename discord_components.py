@@ -145,6 +145,7 @@ class DiscordTriggerBranch(Component):
 
     ##### outPorts:
     - discord_msg: The received message that triggered the on_message component.
+    - str_msg (str): The received message content as a string with the msg_trigger removed.
 
     ##### ctx:
     - on_message_handlers: A list of message handling functions that are called when a message is received.
@@ -152,6 +153,7 @@ class DiscordTriggerBranch(Component):
     on_message: BaseComponent
     msg_trigger: InCompArg[str]
     discord_msg: OutArg[discord.message.Message]
+    str_msg: OutArg[str]
 
     def execute(self, ctx) -> None:
 
@@ -162,6 +164,7 @@ class DiscordTriggerBranch(Component):
             if message.content.startswith(self.msg_trigger.value):
                 
                 self.discord_msg.value = message
+                self.str_msg.value = message.content.replace(self.msg_trigger.value, "", 1).strip()
                 self.on_message.do(ctx)
 
         ctx['on_message_handlers'].append(trigger_branch_handler)
@@ -186,31 +189,6 @@ class DiscordEchoMessage(Component):
 
         message = self.discord_msg.value
         self.msg.value = "You said: " + str(message.content)
-
-
-@xai_component
-class DiscordMessage2Str(Component):
-    """Util that removes the leading trigger string from a Discord message input.
-    
-    EG: 
-    Trigger: @Xaibot
-    User Input: @Xaibot Predict this image!
-    msg: Predict this image!
-
-    ##### inPorts:
-    - discord_msg: Input Discord message.
-    - msg_trigger(str): Trigger string to remove.
-
-    ##### outPorts:
-    - msg(str): Modified message.
-    """
-    discord_msg: InCompArg[discord.message.Message]
-    msg_trigger: InCompArg[str]
-    msg: OutArg[str]
-
-    def execute(self, ctx) -> None:
-        discord_msg = str(self.discord_msg.value.content)
-        self.msg.value  = discord_msg.replace(self.msg_trigger.value, "", 1).strip()
 
 @xai_component
 class DiscordPostMessage(Component):
