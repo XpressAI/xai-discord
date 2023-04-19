@@ -102,7 +102,8 @@ class DiscordDeployBot(Component):
     Deploys the Discord bot using the provided token, running either in Xircuits or as a standalone script.
 
     ##### inPorts:
-    - token: The bot token to be used for authentication.
+    - token: The bot token to be used for authentication. 
+        If not provided, will search for 'DISCORD_BOT_TOKEN' from env.
 
     ##### ctx:
     - on_message_handlers: A list of message handling functions that are called when a message is received.
@@ -160,7 +161,7 @@ class DiscordTriggerBranch(Component):
             if message.content.startswith(self.msg_trigger.value):
                 
                 self.discord_msg.value = message
-                await self.on_message.do(ctx)
+                self.on_message.do(ctx)
 
         ctx['on_message_handlers'].append(trigger_branch_handler)
 
@@ -188,7 +189,12 @@ class DiscordEchoMessage(Component):
 
 @xai_component
 class DiscordMessage2Str(Component):
-    """Removes the leading trigger string from a Discord message.
+    """Util that removes the leading trigger string from a Discord message input.
+    
+    EG: 
+    Trigger: @Xaibot
+    User Input: @Xaibot Predict this image!
+    msg: Predict this image!
 
     ##### inPorts:
     - discord_msg: Input Discord message.
@@ -261,6 +267,6 @@ class DiscordProcessImage(Component):
                                 self.image_data.value = await resp.read()
 
                 self.discord_msg.value = message
-                await self.on_message.do(ctx)
+                self.on_message.do(ctx)
 
         ctx['on_message_handlers'].append(process_image_handler)
