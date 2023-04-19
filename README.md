@@ -86,3 +86,7 @@ pip install -r xai_components/xai_discord/requirements.txt
 
 4. Copy the generated URL from the "Scopes" section and paste it into your browser.
 5. Follow the prompts to authorize your bot and add it to your desired server.
+
+
+## Developers Discord
+Have any questions? Feel free to chat with the devs at our [Discord](https://discord.com/invite/vgEg2ZtxCw)!
