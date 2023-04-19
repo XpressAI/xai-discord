@@ -1,7 +1,27 @@
-# Xircuits Discord Component Library
 
-Xircuits component library to interface with Discord! Uses [discord.py](https://github.com/Rapptz/discord.py) as backend.
+<p align="center">
+  <a href="https://github.com/XpressAI/xircuits/tree/master/xai_components#xircuits-component-library-list">Component Libraries</a> •
+  <a href="https://github.com/XpressAI/xircuits/tree/master/project-templates#xircuits-project-templates-list">Project Templates</a>
+  <br>
+  <a href="https://xircuits.io/">Docs</a> •
+  <a href="https://xircuits.io/docs/Installation">Install</a> •
+  <a href="https://xircuits.io/docs/category/tutorials">Tutorials</a> •
+  <a href="https://xircuits.io/docs/category/developer-guide">Developer Guides</a> •
+  <a href="https://github.com/XpressAI/xircuits/blob/master/CONTRIBUTING.md">Contribute</a> •
+  <a href="https://www.xpress.ai/blog/">Blog</a> •
+  <a href="https://discord.com/invite/vgEg2ZtxCw">Discord</a>
+</p>
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/68586800/232997216-5248081f-86a4-484d-bc87-78ee19f6d255.png" width="450"/>
+</p>
+
+
+
+<p align="center">Xircuits Component Library to interface with Discord! Uses <a href="https://github.com/Rapptz/discord.py">discord.py</a> as backend.
+</p>
+
+# Preview
 
 ![helloXircuitsDiscord](https://user-images.githubusercontent.com/68586800/232559150-593258f0-dfd7-43d5-9afa-069210bd6787.gif)
 
@@ -11,11 +31,20 @@ Xircuits component library to interface with Discord! Uses [discord.py](https://
 
 ## Installation
 
+To use this component library, ensure that you have an existing [Xircuits setup](https://xircuits.io/docs/main/Installation). You can then pull and install this library using:
+
 ```
-pip install -r requirements.txt
+xircuits-submodules xai_discord
 ```
 
-To use this component library, simply copy the directory / clone or submodule the repository to your working Xircuits project directory.
+Otherwise you can do it manually by cloning and installing it.
+
+```
+# base Xircuits directory
+git clone https://github.com/XpressAI/xai-discord xai_components/xai_discord
+pip install -r xai_components/xai_discord/requirements.txt
+```
+
 
 
 ## Discord Related Setup
