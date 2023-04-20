@@ -18,8 +18,7 @@
 
 
 
-<p align="center">Xircuits Component Library to interface with Discord! Uses <a href="https://github.com/Rapptz/discord.py">discord.py</a> as backend.
-</p>
+<p align="center">Xircuits Component Library to interface with Discord! Create Discord Bots in seconds.</br>Uses <a href="https://github.com/Rapptz/discord.py">discord.py</a> as backend.</p>
 
 # Preview
 
@@ -72,21 +71,18 @@ pip install -r xai_components/xai_discord/requirements.txt
 1. In the [Discord Developer Portal](https://discord.com/developers/applications), navigate to your application's settings.
 2. Click on the "OAuth2" tab.
 3. Update the "Scopes" section and then the "Bot Permissions" section. Below is the config we have used:
-
     #### Scopes:
-
     - bot: For OAuth2 bots, this puts the bot in the user's selected guild by default.
     - applications.commands: Allows your app to use commands in a guild.
-
     #### Bot Permissions:
-
     - View Channels: Allows the bot to view the channels in the server.
     - Send Messages: Allows the bot to send messages in text channels.
     - Read Message History: Allows the bot to read the message history of text channels.
-
+    
 4. Copy the generated URL from the "Scopes" section and paste it into your browser.
 5. Follow the prompts to authorize your bot and add it to your desired server.
 
 
 ## Developers Discord
-Have any questions? Feel free to chat with the devs at our [Discord](https://discord.com/invite/vgEg2ZtxCw)!
+Play with our Discord bot, Xaibo [here](https://discord.gg/dK8jgknkG6).
+The devs at there too.
