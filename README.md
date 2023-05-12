@@ -57,15 +57,6 @@ pip install -r xai_components/xai_discord/requirements.txt
 5. You will need to enable some `Privileged Gateway Intents` to enable bot interation. For this component library, `MESSAGE CONTENT INTENT` should be enough.
 6. Under the "Token" section, click "Copy" to copy the bot token to your clipboard. You may need to Reset the token if it is a new bot.
 
-### Obtaining the Channel ID
-
-1. Open the Discord client and navigate to the server where your bot is a member.
-2. Right-click on the desired text channel and click "Copy ID".
-   - If you don't see the "Copy ID" option, enable Developer Mode in Discord:
-     1. Click the gear icon in the bottom-left corner to open "User Settings".
-     2. In the "App Settings" tab, scroll down to the "Advanced" section.
-     3. Toggle the "Developer Mode" switch.
-
 ### Inviting the Bot to a Server
 
 1. In the [Discord Developer Portal](https://discord.com/developers/applications), navigate to your application's settings.
@@ -75,7 +66,7 @@ pip install -r xai_components/xai_discord/requirements.txt
     - bot: For OAuth2 bots, this puts the bot in the user's selected guild by default.
     - applications.commands: Allows your app to use commands in a guild.
     #### Bot Permissions:
-    - View Channels: Allows the bot to view the channels in the server.
+    - Read Messages / View Channels: Allows the bot to read and view the channels in the server.
     - Send Messages: Allows the bot to send messages in text channels.
     - Read Message History: Allows the bot to read the message history of text channels.
     
