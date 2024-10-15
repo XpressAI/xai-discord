@@ -33,6 +33,8 @@ jobs:
       run: |
         python -m venv venv
         echo "${{ github.workspace }}/venv/bin" >> $GITHUB_PATH
+        source venv/bin/activate
+        pip install --upgrade pip
 
     - name: Install xircuits in virtual environment
       run: pip install xircuits
@@ -79,6 +81,14 @@ jobs:
         echo "Repository: $LIBRARY_NAME" > $LOG_FILE
         echo "Branch: $BRANCH_NAME" >> $LOG_FILE
         echo -e "Testing Files:\n$TEST_FILES" >> $LOG_FILE
+
+        #Get the server token for GitHub secret if any 
+        TOKEN="${{secrets.DISCORD_TOKEN}}"
+
+        # Set waiting time to consider server run a success
+        SLEEP_TIME=120
+        CHECK_INTERVAL=5 # Check server every 5 seconds
+
         IFS=' ' read -r -a FILE_ARRAY <<< "$TEST_FILES"
         FAIL=0
         if [ ${#FILE_ARRAY[@]} -eq 0 ]; then
@@ -90,26 +100,35 @@ jobs:
               WORKFLOW_LOG_FILE="${FULL_PATH%.*}_workflow_log.txt"
               echo -e "\n\nProcessing $FULL_PATH..." | tee -a $LOG_FILE
               xircuits compile $FULL_PATH "${FULL_PATH%.*}.py" 2>&1 | tee -a $LOG_FILE
-              python "${FULL_PATH%.*}.py" 2>&1 | tee -a $WORKFLOW_LOG_FILE
-              LAST_LINE=$(tail -n 1 "$WORKFLOW_LOG_FILE")
-              if [[ "$LAST_LINE" != "Finished Executing" ]]; then
-                echo "Error: Workflow $FULL_PATH did not finish as expected" | tee -a $LOG_FILE
-                FAIL=1
+    
+              python "${FULL_PATH%.*}.py" --token "$TOKEN" 2>&1 | tee -a $WORKFLOW_LOG_FILE &
+              WORKFLOW_PID=$!
+    
+              TIME_PASSED=0
+              while ps -p $WORKFLOW_PID > /dev/null && [ $TIME_PASSED -lt $SLEEP_TIME ]; do
+                sleep $CHECK_INTERVAL
+                TIME_PASSED=$((TIME_PASSED + CHECK_INTERVAL))
+              done
+    
+              if ps -p $WORKFLOW_PID > /dev/null; then
+                kill -9 $WORKFLOW_PID
+                echo "Test for $FULL_PATH server ran successfully for $SLEEP_TIME seconds." | tee -a $LOG_FILE 
               else
-                echo "$FULL_PATH processed successfully" | tee -a $LOG_FILE
+                echo "Test for $FULL_PATH failed to run for $SLEEP_TIME seconds.." | tee -a $LOG_FILE
+                FAIL=1
               fi
-              cat "$WORKFLOW_LOG_FILE" | tee -a $LOG_FILE
             else
-              echo "Specified file $FULL_PATH does not exist" | tee -a $LOG_FILE
+              echo "Specified file $FULL_PATH does not exist." | tee -a $LOG_FILE
               FAIL=1
             fi
           done
         fi
+    
         if [ $FAIL -ne 0 ]; then
           echo "One or more workflows failed or did not finish as expected." | tee -a $LOG_FILE
           exit 1
         else 
-          echo "Workflow processing completed" | tee -a $LOG_FILE
+          echo "All workflows processed successfully." | tee -a $LOG_FILE
         fi
 
     - name: Upload log file
