@@ -6,7 +6,14 @@ authors = [{ name = "XpressAI", email = "eduardo@xpress.ai" }]
 license = "Apache-2.0"
 readme = "readme.md"
 repository = "https://github.com/XpressAI/xai-discord"
-keywords = ["xircuits", "discord","Bot"]
+keywords = ["xircuits", "discord", "Bot"]
+
+dependencies = [
+    "discord-py==2.4.0",
+    "aiohttp==3.10.10",
+    "torch==2.4.1",
+    "torchvision==0.19.1"
+]
 
 # Xircuits-specific configurations
 [tool.xircuits]
