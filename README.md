@@ -109,6 +109,11 @@ The `DiscordBotBranchExample.xircuits` workflow creates a Discord bot that liste
 
 The `DiscordBotCVisionExample.xircuits` workflow creates a Discord bot that listens for the command `$predict` with an image attachment. The bot processes the image using a MobileNetV2 model for predictions and responds with the predicted class. It also includes a shutdown command `$ayonara`.
 
+Additional Example Requirement: 
+```
+pip install  torch==2.4.1 torchvision==0.19.1
+```
+
 ### Discord Bot Message Responder Example
 
 The `DiscordBotMessageResponder.xircuits` workflow sets up a Discord bot that listens for specific text commands and responds with predefined messages. For instance:
